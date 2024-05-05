@@ -1,17 +1,19 @@
-// server.js
-
 const express = require('express');
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const proxy = require('http-proxy-middleware');
 
 const app = express();
+app.use(express.static('client'));
 
-// Define your proxy route
-app.use('/api', createProxyMiddleware({ target: 'http://98.130.5.88:8080', changeOrigin: true }));
+// Add middleware for http proxying 
+const apiProxy = proxy('/api', { target: 'http://98.130.5.88:8080' });
+app.use('/api', apiProxy);
 
-// Define your other routes or middleware here
+// Render your site
+const renderIndex = (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'client/index.html'));
+}
+app.get('/*', renderIndex);
 
-// Start the server
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(3000, () => {
+  console.log('Listening on: http://localhost:3000');
 });
