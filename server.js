@@ -1,25 +1,17 @@
-const http = require('http');
-const httpProxy = require('http-proxy');
+// server.js
 
-const proxy = httpProxy.createProxyServer();
+const express = require('express');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
-// Proxy server
-const server = http.createServer((req, res) => {
-    // Forward request to backend API
-    proxy.web(req, res, { target: '98.130.5.88:8080' });
-});
+const app = express();
 
-// Error handling for proxy
-proxy.on('error', (err, req, res) => {
-    console.error(err);
-    res.writeHead(500, {
-        'Content-Type': 'text/plain'
-    });
-    res.end('Proxy Error');
-});
+// Define your proxy route
+app.use('/api', createProxyMiddleware({ target: 'http://98.130.5.88:8080', changeOrigin: true }));
+
+// Define your other routes or middleware here
 
 // Start the server
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Proxy server running on port ${PORT}`);
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
