@@ -6,7 +6,7 @@ const proxy = httpProxy.createProxyServer();
 // Proxy server
 const server = http.createServer((req, res) => {
     // Forward request to backend API
-    proxy.web(req, res, { target: '<url and port if needed>' });
+    proxy.web(req, res, { target: '98.130.5.88:8080' });
 });
 
 // Error handling for proxy
